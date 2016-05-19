@@ -1,0 +1,249 @@
+from random import randint
+def randtest():
+    randtest = []
+    for i in range(100):
+        randtest.append(randint(0,999))
+    return randtest
+no = [5,4,3,2,1,10,9,8,7,6,15,14,13,12,11]
+b = randtest()
+
+def check(b):
+    for i in range(1,len(b)):
+        if b[i]<b[i-1]:
+            print 'bug'
+            break
+    print 'good'
+
+#insertion sort
+'''
+def insertionSort(n):
+    for i in range(1, len(n)):
+        key = n[i]
+        prev = i-1
+        while prev >= 0 and n[prev] >key:
+            n[prev+1] = n[prev]
+            prev -= 1
+        #print i
+        n[prev+1] = key
+    return n
+'''
+
+#quicksort
+
+'''
+def quicksort(x):
+    partition(x, 0, len(x)-1)
+    return x  
+
+def partition(n, first, last):
+    #si el index es menor. otherwise, es igual. (no puede ser mas grande)
+    if first < last:    
+       # print 'first: ', str(first)
+        #print 'last: ', str(last)
+        #print 'n: ', str(n)
+        #print 'n[edge]: ', str(n[edge])
+        #print 'n[first:last]: ', str(n[first:last+2])
+        #escoger index q para pivote
+        q = randint(first, last )
+        
+        #index r para posicionar el pivote
+        #print 'q: ', str(q)
+        #print 'n[q]: ', str(n[q])
+        
+        #posicionar el pivote [REVISAR SI ESTA POSICIONADO]
+        if q != last:
+            swap = n[q]
+            n[q] = n[last]
+            n[last] = swap
+       # print 'nswap: ', str(n[first:last+2])
+        #posicionar la division entre mas grande o mas pequeño en primer indice  
+        edge = first
+        #comparar desde el primero hasta el penúltimo con el último
+        for i in range(first, last):
+            #number is smaller, swap with edge, increase edge
+            #si el primero es mas pequeño, n[i] = n[edge] 
+            #mantenemos el edge uno adelante del más pequeño. asi al final,
+            #cambiamos el pivote por un numero más grande 
+            if n[i] <= n[last]:
+                swap = n[i]
+                n[i] = n[edge]
+                n[edge] = swap
+                edge += 1
+        #poner el pivote en su lugar
+        swap = n[last]
+        n[last] = n[edge]
+        n[edge] = swap
+        
+        
+        #partition left #no puede ser 0 siempre el first
+        partition(n,first, edge-1)
+        #partition right
+        partition(n, edge+1, last)
+        
+
+'''
+
+#textbook quicksort
+
+'''
+
+def quicksorted (n, first, last):
+    if first < last:
+        q = partition(n, first, last)
+        print q
+        quicksorted(n, first, q-1)
+        quicksorted(n, q+1, last)
+        
+        
+def partition(n, first, last):
+        x = n[last]
+        i = first-1
+        for j in range(first, last-1):
+            if n[j] <= x:
+                i += 1
+                swap = n[j]
+                n[j] = n[i]
+                n[i] = swap
+        swap = n[i+1]
+        n[i+1] = n[last]
+        n[last] = swap
+        i += 1
+        return i
+        
+def randpartition(n, first, last):
+    i = randint(first, last)
+    swap = n[i]
+    n[i] = n[last]
+    n[last] = swap
+    return partition(n, first, last)
+'''
+
+#counting sort
+
+'''
+def countingsort(n):
+    a = []
+    b = []
+    if len(n) != 0:
+        for i in range(max(n)+1):
+            a.append(0)
+    
+    for i in range(len(n)):
+        b.append('nil')  
+        
+    for i in n:
+        a[i] += 1
+        
+    for i in range(1,len(a)):
+        a[i] += a[i-1]
+        
+    for i in reversed(n):
+        b[a[i]-1] = i
+        a[i] -= 1
+        
+    return b
+'''
+
+#radixsort
+'''
+def radixSort(n):
+    m = []
+    for i in range(len(n)):
+        m.append(str(n[i]))
+    
+    b = []
+    
+    
+    for i in range(len(n)):
+        b.append('nil')
+        
+    
+    last = 0
+    for i in m:
+        if len(i)-1>last:
+            #print 'len(i): ', str(len(i))
+            last = len(i)-1
+    
+    def countRadix(m, j):    
+        if j < 0:
+            nn = []
+            for i in m:
+                nn.append(int(i))
+            return nn
+        a = []
+    
+        for i in range(10):
+            a.append(0)
+        
+            
+        for i in m:
+            a[int(i[j])] += 1
+            
+        for i in range(1,len(a)):
+            a[i] += a[i-1]
+        
+        for i in reversed(m):
+            b[a[int(i[j])]-1] = i
+            a[int(i[j])] -= 1
+        bb = b[:]
+        return countRadix(bb, j-1)
+    
+    return countRadix(m,last)
+
+'''
+
+#heapsort
+
+'''
+def parent(i):
+    return ((i-1)/2)
+    
+def left(i):
+    return 2*(i+1)-1
+    
+def right(i):
+    return (i+1)*2
+    
+def maxheapify(n, i):
+    l = left(i)
+    r = right(i)
+    if l <= len(n)-1 and n[l]>n[i]:
+        largest = l
+    else: 
+        largest = i
+    if r <= len(n)-1 and n[r]>n[largest]:
+        largest = r
+    if largest != i:
+        swap = n[i]
+        n[i] = n[largest]
+        n[largest] = swap
+        return maxheapify(n, largest)
+    return n
+
+def buildmaxheap(n):
+    for i in range((len(n))/2-1, -1, -1):
+        maxheapify(n,i)
+    return n
+    
+        
+def heapsort(n):
+    return buildmaxheap(n)
+    for i in range(len(n), 2, -1):
+        swap = n[l]
+        n[l] = n[i]
+        n[i] = swap
+        maxheapify(n, l)
+
+print heapsort(b)
+bla = heapsort(b)
+
+def check2(a):
+    for i in range(0,(len(a)/2)-1):
+        if a[left(i)] > a[i] or a[right(i)] > a[i]:
+            print 'bug'
+            break
+    return 'good'
+    
+print check2(bla)
+
+'''
