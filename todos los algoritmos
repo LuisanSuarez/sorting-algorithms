@@ -1,21 +1,24 @@
 from random import randint
+import time
+
+
 def randtest():
     randtest = []
-    for i in range(100):
-        randtest.append(randint(0,999))
+    for i in range(100000):
+        randtest.append(randint(100,999))
     return randtest
 no = [5,4,3,2,1,10,9,8,7,6,15,14,13,12,11]
-b = randtest()
+test = randtest()
 
 def check(b):
     for i in range(1,len(b)):
         if b[i]<b[i-1]:
             print 'bug'
             break
-    print 'good'
+    return 'good'
 
 #insertion sort
-'''
+
 def insertionSort(n):
     for i in range(1, len(n)):
         key = n[i]
@@ -26,12 +29,12 @@ def insertionSort(n):
         #print i
         n[prev+1] = key
     return n
-'''
+
 
 #quicksort
 
-'''
-def quicksort(x):
+
+def quickSort(x):
     partition(x, 0, len(x)-1)
     return x  
 
@@ -81,24 +84,36 @@ def partition(n, first, last):
         partition(n, edge+1, last)
         
 
-'''
 
 #textbook quicksort
 
-'''
 
-def quicksorted (n, first, last):
+
+def textbookQuickSort(n):
+    return quickSorted(n, 0, len(n)-1)
+    
+def textbookQuickSortRand(n):
+    return quickSortedRand(n, 0, len(n)-1)
+
+def quickSorted (n, first, last):
     if first < last:
-        q = partition(n, first, last)
-        print q
-        quicksorted(n, first, q-1)
-        quicksorted(n, q+1, last)
+        q = partition2(n, first, last)
+        quickSorted(n, first, q-1)
+        quickSorted(n, q+1, last)
+    return n
+
+def quickSortedRand(n, first, last):
+    if first < last:
+        q = randpartition(n, first, last)
+        quickSorted(n, first, q-1)
+        quickSorted(n, q+1, last)
+    return n
+    
         
-        
-def partition(n, first, last):
+def partition2(n, first, last):
         x = n[last]
         i = first-1
-        for j in range(first, last-1):
+        for j in range(first, last):
             if n[j] <= x:
                 i += 1
                 swap = n[j]
@@ -115,13 +130,12 @@ def randpartition(n, first, last):
     swap = n[i]
     n[i] = n[last]
     n[last] = swap
-    return partition(n, first, last)
-'''
+    return partition2(n, first, last)
 
 #counting sort
 
-'''
-def countingsort(n):
+
+def countingSort(n):
     a = []
     b = []
     if len(n) != 0:
@@ -142,10 +156,10 @@ def countingsort(n):
         a[i] -= 1
         
     return b
-'''
+
 
 #radixsort
-'''
+
 def radixSort(n):
     m = []
     for i in range(len(n)):
@@ -190,11 +204,11 @@ def radixSort(n):
     
     return countRadix(m,last)
 
-'''
+
 
 #heapsort
 
-'''
+
 def parent(i):
     return ((i-1)/2)
     
@@ -226,7 +240,7 @@ def buildmaxheap(n):
     return n
     
         
-def heapsort(n):
+def heapSort(n):
     return buildmaxheap(n)
     for i in range(len(n), 2, -1):
         swap = n[l]
@@ -234,8 +248,52 @@ def heapsort(n):
         n[i] = swap
         maxheapify(n, l)
 
-print heapsort(b)
-bla = heapsort(b)
+
+test_copy_ins = test[:]
+test_copy_q1 = test[:]
+test_copy_q2 = test[:]
+test_copy_q3 = test[:]
+test_copy_ct = test[:]
+test_copy_rad = test[:]
+test_copy_hp = test[:]
+
+t_ins = time.clock()
+insert = insertionSort(test_copy_ins)
+te_ins = time.clock()
+time_insert = te_ins - t_ins
+
+t_quick1 = time.clock()
+quick1 = quickSort(test_copy_q1)
+te_quick1 = time.clock()
+time_quick1 = te_quick1 - t_quick1
+
+t_quick2 = time.clock()
+quick2 = textbookQuickSort(test_copy_q2)
+te_quick2 = time.clock()
+time_quick2 = te_quick2 - t_quick2
+
+
+t_quick3 = time.clock()
+quick3 = textbookQuickSortRand(test_copy_q3)
+te_quick3 = time.clock()
+time_quick3 = te_quick3 - t_quick3
+
+t_ct = time.clock()
+count = countingSort(test_copy_ct)
+te_ct = time.clock()
+time_count = te_ct - t_ct
+
+t_rad = time.clock()
+radix = radixSort(test_copy_rad)
+te_rad = time.clock()
+time_radix = te_rad - t_rad
+
+t_heap = time.clock()
+heap = heapSort(test_copy_hp)
+te_heap = time.clock()
+time_heap = te_heap - t_heap
+
+
 
 def check2(a):
     for i in range(0,(len(a)/2)-1):
@@ -243,7 +301,24 @@ def check2(a):
             print 'bug'
             break
     return 'good'
-    
-print check2(bla)
 
-'''
+print 'Is Data in Order?'
+print     
+print 'Insertion Sort: ', check(insert)
+print 'Quick Sort: ', check(quick1)
+print 'Quick Sort 2: ', check(quick2)
+print 'Quick Sort 3: ', check(quick3)
+print 'Counting Sort: ', check(count)
+print 'Radix Sort: ', check(radix)
+print 'Heap Sort: ', check2(heap)
+
+print
+print 'Time Elapsed'
+print 'Insertion sort: ', time_insert
+print 'Quicksort: ', time_quick1
+print 'Textbook Quicksort: ', time_quick2
+print 'Textbook Random Quicksort: ', time_quick3
+print 'Counting Sort: ', time_count
+print 'Radix Sort: ', time_radix
+print 'Heap Sort: ', time_heap
+
