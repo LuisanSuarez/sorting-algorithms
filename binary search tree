@@ -1,0 +1,126 @@
+class Node(object):
+    p = None
+    left = None
+    right = None
+    def __init__(self, key):
+       self.key = key
+       self.left = None
+       self.right  = None
+       self.p = None
+    
+            
+def tree_min(x):
+        while x.left != None:
+            x = x.left
+        return x
+
+def inorder_tree_walk(x):
+        if x != None:
+            inorder_tree_walk(x.left)
+            print x.key
+            inorder_tree_walk(x.right)
+
+def inorder_tree_walk2(x):
+        if x != None:
+            #print x.key
+            inorder_tree_walk2(x.left)
+            
+            inorder_tree_walk2(x.right)
+            print x.key
+class Tree(object):
+    root = None
+    size = 0
+    def __init__(self):
+        self.root = None
+        self.size = 0
+        
+    def binary_insert(self, z):
+        y = None
+        x = self.root
+        while x != None:
+            y = x
+            if z.key < x.key:
+                x = x.left
+            else:
+                x = x.right
+        z.p = y
+        if y == None:
+            self.root = z #empty tree
+        elif z.key < y.key:
+            y.left = z
+        else:
+            y.right = z
+        self.size += 1
+    
+    def transplant (self, u, v):
+        if u.p == None:
+            self.root  = v
+        elif u == u.p.left:
+            u.p.left = v
+        else:
+            u.p.right = v
+        if v != None:
+            v.p = u.p
+            
+    
+            
+    def binary_delete (self, z):
+        if self.tree_search(z):
+            if z.left == None:
+                self.transplant(z, z.right)
+            elif z.right == None:
+                self.transplant(z,z.left)
+            else:
+                y = tree_min(z.right)
+                if y.p != z:
+                    self.transplant(y, y.right)
+                    y.right = z.right
+                    y.right.p = y
+                self.transplant (z, y)
+                y.left = z.left
+                y.left.p = y
+        else:
+            return  'Key is not present in tree'  
+    
+    def tree_search(self, node):
+         x = self.root
+         while x != None and x.key != node.key:
+            if node.key < x.key:
+                x = x.left
+            else:
+                x = x.right
+         if x:
+            return x.key
+         else:
+            return None
+
+test = Tree()
+#node = Node(i)
+
+b =[]
+
+node1 = Node(1)
+node4 = Node(4)
+node5 = Node(5)
+node2 = Node(2)
+node7 = Node(7)
+node0 = Node(0)
+node8 = Node(8)
+node3 = Node(3)
+
+node6 = Node(6)
+
+b.append(node0)
+b.append(node1)
+b.append(node7)
+b.append(node8)
+b.append(node2)
+b.append(node5)
+b.append(node6)
+b.append(node4)
+b.append(node3)
+
+   
+
+for i in b:
+    test.binary_insert(i)
