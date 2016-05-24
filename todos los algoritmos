@@ -2,17 +2,11 @@ from random import randint
 import time
 
 
-def randtest():
-    randtest = []
-    for i in range(100000):
-        randtest.append(randint(100,999))
-    return randtest
-no = [5,4,3,2,1,10,9,8,7,6,15,14,13,12,11]
-test = randtest()
 
+#Para listas en orden no-descendiente
 def check(b):
     for i in range(1,len(b)):
-        if b[i]<b[i-1]:
+        if b[i]<b[i-1]:     #revisar que el siguiente en la fila sea mayor
             print 'bug'
             break
     return 'good'
@@ -23,11 +17,11 @@ def insertionSort(n):
     for i in range(1, len(n)):
         key = n[i]
         prev = i-1
-        while prev >= 0 and n[prev] >key:
-            n[prev+1] = n[prev]
+        while prev >= 0 and n[prev] >key: #test de relación con clave anterior
+            n[prev+1] = n[prev]      #cambio de posición para adelante
             prev -= 1
-        #print i
-        n[prev+1] = key
+        
+        n[prev+1] = key           #posición final hasta atrás
     return n
 
 
@@ -41,24 +35,15 @@ def quickSort(x):
 def partition(n, first, last):
     #si el index es menor. otherwise, es igual. (no puede ser mas grande)
     if first < last:    
-       # print 'first: ', str(first)
-        #print 'last: ', str(last)
-        #print 'n: ', str(n)
-        #print 'n[edge]: ', str(n[edge])
-        #print 'n[first:last]: ', str(n[first:last+2])
-        #escoger index q para pivote
+        #escoger un pivote
         q = randint(first, last )
         
-        #index r para posicionar el pivote
-        #print 'q: ', str(q)
-        #print 'n[q]: ', str(n[q])
-        
-        #posicionar el pivote [REVISAR SI ESTA POSICIONADO]
+        #posicionar el pivote al final de la lista
         if q != last:
             swap = n[q]
             n[q] = n[last]
             n[last] = swap
-       # print 'nswap: ', str(n[first:last+2])
+       
         #posicionar la division entre mas grande o mas pequeño en primer indice  
         edge = first
         #comparar desde el primero hasta el penúltimo con el último
@@ -88,10 +73,12 @@ def partition(n, first, last):
 #textbook quicksort
 
 
-
+#igual que el anterior, pero diferente orden de recursividad
 def textbookQuickSort(n):
     return quickSorted(n, 0, len(n)-1)
     
+   #random partition (para garantizar un pivote que logre divisiones
+   #mas parejas sobre varias iteraciones 
 def textbookQuickSortRand(n):
     return quickSortedRand(n, 0, len(n)-1)
 
@@ -125,6 +112,7 @@ def partition2(n, first, last):
         i += 1
         return i
         
+        #pivote aleatorio
 def randpartition(n, first, last):
     i = randint(first, last)
     swap = n[i]
@@ -138,22 +126,22 @@ def randpartition(n, first, last):
 def countingSort(n):
     a = []
     b = []
-    if len(n) != 0:
+    if len(n) != 0:         
         for i in range(max(n)+1):
-            a.append(0)
+            a.append(0)            #crear array para llevar cuenta
     
     for i in range(len(n)):
-        b.append('nil')  
+        b.append(None)          #array auxiliar donde caeran en orden
         
     for i in n:
-        a[i] += 1
-        
+        a[i] += 1                  #Llevamos la cuenta. El número en cada
+                                   #posición nos da la cantidad de ese entero
     for i in range(1,len(a)):
-        a[i] += a[i-1]
-        
+        a[i] += a[i-1]      #resultado: cada número nos dice cuantos hay
+                            #numeros hay iguales o menores al de la posición
     for i in reversed(n):
         b[a[i]-1] = i
-        a[i] -= 1
+        a[i] -= 1           #poner cada uno en su posición respectiva
         
     return b
 
@@ -163,26 +151,25 @@ def countingSort(n):
 def radixSort(n):
     m = []
     for i in range(len(n)):
-        m.append(str(n[i]))
-    
+        m.append(str(n[i]))   #volvemos string para poder acceder a cada digito
+                              #independientemente del número
     b = []
     
     
-    for i in range(len(n)):
-        b.append('nil')
+    for i in range(len(n)):  
+        b.append(None)
         
     
     last = 0
     for i in m:
-        if len(i)-1>last:
-            #print 'len(i): ', str(len(i))
-            last = len(i)-1
-    
+        if len(i)-1>last:    #mantenemos la escabilidad (todos los numeros
+            last = len(i)-1  #deben tener la misma cantidad de digitos
+                             #en esta versión
     def countRadix(m, j):    
         if j < 0:
             nn = []
             for i in m:
-                nn.append(int(i))
+                nn.append(int(i))    #countingsort con los digitos, 0-9
             return nn
         a = []
     
@@ -203,12 +190,14 @@ def radixSort(n):
         return countRadix(bb, j-1)
     
     return countRadix(m,last)
-
+    
+    #como Counting Sort es un algoritmo estable, podemos ordenar los digitos
+    #del más pequeño al más grande y mantener el orden
 
 
 #heapsort
 
-
+#definimos funciones para las relaciones en el árbol
 def parent(i):
     return ((i-1)/2)
     
@@ -218,6 +207,8 @@ def left(i):
 def right(i):
     return (i+1)*2
     
+#llevamos  el número más grande "largest" a mantener un orden descendiente
+#i.e. el parent siempre será igual o más grande que sus hijos
 def maxheapify(n, i):
     l = left(i)
     r = right(i)
@@ -234,12 +225,14 @@ def maxheapify(n, i):
         return maxheapify(n, largest)
     return n
 
+#iterable sobre maxheapify para mantener el orden
 def buildmaxheap(n):
     for i in range((len(n))/2-1, -1, -1):
         maxheapify(n,i)
     return n
     
-        
+#creamos el heap, y llamamos a maxheapify para asegurarnos de que el orden
+#se mantenga en caso de que se rompa al hacer el cambio       
 def heapSort(n):
     return buildmaxheap(n)
     for i in range(len(n), 2, -1):
@@ -248,53 +241,7 @@ def heapSort(n):
         n[i] = swap
         maxheapify(n, l)
 
-
-test_copy_ins = test[:]
-test_copy_q1 = test[:]
-test_copy_q2 = test[:]
-test_copy_q3 = test[:]
-test_copy_ct = test[:]
-test_copy_rad = test[:]
-test_copy_hp = test[:]
-
-t_ins = time.clock()
-insert = insertionSort(test_copy_ins)
-te_ins = time.clock()
-time_insert = te_ins - t_ins
-
-t_quick1 = time.clock()
-quick1 = quickSort(test_copy_q1)
-te_quick1 = time.clock()
-time_quick1 = te_quick1 - t_quick1
-
-t_quick2 = time.clock()
-quick2 = textbookQuickSort(test_copy_q2)
-te_quick2 = time.clock()
-time_quick2 = te_quick2 - t_quick2
-
-
-t_quick3 = time.clock()
-quick3 = textbookQuickSortRand(test_copy_q3)
-te_quick3 = time.clock()
-time_quick3 = te_quick3 - t_quick3
-
-t_ct = time.clock()
-count = countingSort(test_copy_ct)
-te_ct = time.clock()
-time_count = te_ct - t_ct
-
-t_rad = time.clock()
-radix = radixSort(test_copy_rad)
-te_rad = time.clock()
-time_radix = te_rad - t_rad
-
-t_heap = time.clock()
-heap = heapSort(test_copy_hp)
-te_heap = time.clock()
-time_heap = te_heap - t_heap
-
-
-
+#revisión para una lista ordenada en arbol binario (no en orden no-descendiente)
 def check2(a):
     for i in range(0,(len(a)/2)-1):
         if a[left(i)] > a[i] or a[right(i)] > a[i]:
@@ -302,23 +249,83 @@ def check2(a):
             break
     return 'good'
 
-print 'Is Data in Order?'
-print     
-print 'Insertion Sort: ', check(insert)
-print 'Quick Sort: ', check(quick1)
-print 'Quick Sort 2: ', check(quick2)
-print 'Quick Sort 3: ', check(quick3)
-print 'Counting Sort: ', check(count)
-print 'Radix Sort: ', check(radix)
-print 'Heap Sort: ', check2(heap)
+valores = [100, 1000, 10000, 20000]
 
-print
-print 'Time Elapsed'
-print 'Insertion sort: ', time_insert
-print 'Quicksort: ', time_quick1
-print 'Textbook Quicksort: ', time_quick2
-print 'Textbook Random Quicksort: ', time_quick3
-print 'Counting Sort: ', time_count
-print 'Radix Sort: ', time_radix
-print 'Heap Sort: ', time_heap
+for i in valores:
+    def randtest():
+        randtest = []
+        for j in range(i):
+            randtest.append(randint(i*.1 ,i-1))
+        return randtest
+#no = [5,4,3,2,1,10,9,8,7,6,15,14,13,12,11]
+    test = randtest()
+    
 
+    test_copy_ins = test[:]
+    test_copy_q1 = test[:]
+    test_copy_q2 = test[:]
+    test_copy_q3 = test[:]
+    test_copy_ct = test[:]
+    test_copy_rad = test[:]
+    test_copy_hp = test[:]
+    
+    t_ins = time.clock()
+    insert = insertionSort(test_copy_ins)
+    te_ins = time.clock()
+    time_insert = te_ins - t_ins
+    
+    t_quick1 = time.clock()
+    quick1 = quickSort(test_copy_q1)
+    te_quick1 = time.clock()
+    time_quick1 = te_quick1 - t_quick1
+    
+    t_quick2 = time.clock()
+    quick2 = textbookQuickSort(test_copy_q2)
+    te_quick2 = time.clock()
+    time_quick2 = te_quick2 - t_quick2
+    
+    
+    t_quick3 = time.clock()
+    quick3 = textbookQuickSortRand(test_copy_q3)
+    te_quick3 = time.clock()
+    time_quick3 = te_quick3 - t_quick3
+    
+    t_ct = time.clock()
+    count = countingSort(test_copy_ct)
+    te_ct = time.clock()
+    time_count = te_ct - t_ct
+    
+    t_rad = time.clock()
+    radix = radixSort(test_copy_rad)
+    te_rad = time.clock()
+    time_radix = te_rad - t_rad
+    
+    t_heap = time.clock()
+    heap = heapSort(test_copy_hp)
+    te_heap = time.clock()
+    time_heap = te_heap - t_heap
+    
+    
+    
+    print 'Data base size: ', i
+    print
+    print 'Is Data in Order?'
+    print     
+    print 'Insertion Sort: ', check(insert)
+    print 'Quick Sort: ', check(quick1)
+    print 'Quick Sort 2: ', check(quick2)
+    print 'Quick Sort 3: ', check(quick3)
+    print 'Counting Sort: ', check(count)
+    print 'Radix Sort: ', check(radix)
+    print 'Heap Sort: ', check2(heap)
+    
+    print
+    print 'Time Elapsed'
+    print 'Insertion sort: ', time_insert
+    print 'Quicksort: ', time_quick1
+    print 'Textbook Quicksort: ', time_quick2
+    print 'Textbook Random Quicksort: ', time_quick3
+    print 'Counting Sort: ', time_count
+    print 'Radix Sort: ', time_radix
+    print 'Heap Sort: ', time_heap
+    print
