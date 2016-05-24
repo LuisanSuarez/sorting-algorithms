@@ -2,11 +2,14 @@ class Node(object):
     p = None
     left = None
     right = None
+    data = None
     def __init__(self, key):
        self.key = key
        self.left = None
        self.right  = None
        self.p = None
+       self.data = None
+       
     
             
 def tree_min(x):
@@ -97,30 +100,40 @@ class Tree(object):
 test = Tree()
 #node = Node(i)
 
-b =[]
+#b =[]
+#
+#node1 = Node(1)
+#node4 = Node(4)
+#node5 = Node(5)
+#node2 = Node(2)
+#node7 = Node(7)
+#node0 = Node(0)
+#node8 = Node(8)
+#node3 = Node(3)
+#
+#node6 = Node(6)
+#
+#b.append(node0)
+#b.append(node1)
+#b.append(node7)
+#b.append(node8)
+#b.append(node2)
+#b.append(node5)
+#b.append(node6)
+#b.append(node4)
+#b.append(node3)
 
-node1 = Node(1)
-node4 = Node(4)
-node5 = Node(5)
-node2 = Node(2)
-node7 = Node(7)
-node0 = Node(0)
-node8 = Node(8)
-node3 = Node(3)
+from random import randint
 
-node6 = Node(6)
+ransUsados = []
+nombresNodos = []
 
-b.append(node0)
-b.append(node1)
-b.append(node7)
-b.append(node8)
-b.append(node2)
-b.append(node5)
-b.append(node6)
-b.append(node4)
-b.append(node3)
-
-   
-
-for i in b:
-    test.binary_insert(i)
+for i in range(200):
+    j = randint(0, 500)
+    if j not in ransUsados:
+        ransUsados.append(j)
+        node = Node(j)
+        nombresNodos.append(node)
+        test.binary_insert(node)
+    else:
+        pass
