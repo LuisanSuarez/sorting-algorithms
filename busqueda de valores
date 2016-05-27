@@ -1,0 +1,281 @@
+from random import randint
+
+##########################
+#ordenes no-descendientes#
+##########################
+
+rg_size = 100000
+arr_size = 100000
+test = []
+
+for i in range(arr_size):
+    test.append(randint(0, rg_size))
+    
+
+
+def textbookQuickSort(n):
+    return quickSorted(n, 0, len(n)-1)
+    
+def quickSorted (n, first, last):
+    if first < last:
+        q = partition2(n, first, last)
+        quickSorted(n, first, q-1)
+        quickSorted(n, q+1, last)
+    return n
+
+def partition2(n, first, last):
+        x = n[last]
+        i = first-1
+        for j in range(first, last):
+            if n[j] <= x:
+                i += 1
+                swap = n[j]
+                n[j] = n[i]
+                n[i] = swap
+        swap = n[i+1]
+        n[i+1] = n[last]
+        n[last] = swap
+        i += 1
+        return i
+
+def countingSort(n):
+    a = []
+    b = []
+    if len(n) != 0:         
+        for i in range(max(n)+1):
+            a.append(0)            #crear array para llevar cuenta
+    
+    for i in range(len(n)):
+        b.append(None)          #array auxiliar donde caeran en orden
+        
+    for i in n:
+        a[i] += 1                  #Llevamos la cuenta. El número en cada
+                                   #posición nos da la cantidad de ese entero
+    for i in range(1,len(a)):
+        a[i] += a[i-1]      #resultado: cada número nos dice cuantos hay
+                            #numeros hay iguales o menores al de la posición
+    for i in reversed(n):
+        b[a[i]-1] = i
+        a[i] -= 1           #poner cada uno en su posición respectiva
+        
+    return b
+    
+###################    
+###orden binario###
+###################
+
+def parent(i):
+    return ((i-1)/2)
+    
+def left(i):
+    return 2*(i+1)-1
+    
+def right(i):
+    return (i+1)*2
+    
+
+
+def binary_search(array, key):
+    high = len(array)-1
+    low = 0
+    mid = (high+low)/2
+    while key != array[mid] and (high-low) != 1:
+        if key > array[mid]:
+            low = mid
+            mid = (high+low)/2
+        else:
+            high = mid
+            mid = (high+low)/2
+    if key == array[mid]:
+        return key
+    elif key == array[mid+1]:
+        return key
+    else:
+        print 'Key not found'
+        return
+        
+class Node(object):
+    p = None
+    left = None
+    right = None
+    data = None
+    def __init__(self, key):
+       self.key = key
+       self.left = None
+       self.right  = None
+       self.p = None
+       self.data = None
+       
+    
+            
+def tree_min(x):
+        while x.left != None:
+            x = x.left
+        return x
+            
+class Tree(object):
+    root = None
+    size = 0
+    def __init__(self):
+        self.root = None
+        self.size = 0
+        
+    def binary_insert(self, z):
+        y = None
+        x = self.root
+        while x != None:
+            y = x
+            if z.key < x.key:
+                x = x.left
+            else:
+                x = x.right
+        z.p = y
+        if y == None:
+            self.root = z #empty tree
+        elif z.key < y.key:
+            y.left = z
+        else:
+            y.right = z
+        self.size += 1
+    
+    def transplant (self, u, v):
+        if u.p == None:
+            self.root  = v
+        elif u == u.p.left:
+            u.p.left = v
+        else:
+            u.p.right = v
+        if v != None:
+            v.p = u.p
+            
+    
+            
+    def binary_delete (self, z):
+        if self.tree_search(z):
+            if z.left == None:
+                self.transplant(z, z.right)
+            elif z.right == None:
+                self.transplant(z,z.left)
+            else:
+                y = tree_min(z.right)
+                if y.p != z:
+                    self.transplant(y, y.right)
+                    y.right = z.right
+                    y.right.p = y
+                self.transplant (z, y)
+                y.left = z.left
+                y.left.p = y
+        else:
+            return  'Key is not present in tree'  
+    
+    def tree_search(self, key):
+         x = self.root
+         while x != None and x.key != key:
+            if key < x.key:
+                x = x.left
+            else:
+                x = x.right
+         if x:
+            return x.key
+         else:
+            print 'Key not found'
+            return None
+###################
+###### Test #######
+###################
+binary_tree = Tree()
+
+def check2(a):        #check para orden binario
+    for i in range(0,(len(a)/2)-1):
+        if a[left(i)] > a[i] or a[right(i)] > a[i]:
+            print 'bug'
+            break
+    return 'good'
+    
+
+def check(b):       #check para orden no-descendiente
+    for i in range(1,len(b)):
+        if b[i]<b[i-1]:     #revisar que el siguiente en la fila sea mayor
+            print 'bug'
+            break
+    return 'good'
+    
+ ###copias de test
+test_no_desc1 = test[:]
+test_no_desc2 = test[:]
+    
+from time import clock    ###para tomar tiempo    
+sch_val = randint(0, rg_size)
+sch_val2 = randint(0, rg_size)
+sch_val3 = randint(0, rg_size)
+print
+print 'Números a buscar: ', sch_val, sch_val2, sch_val3
+
+#Quicksort
+print 'Orden no-descendiente'
+print 'Quicksort'
+quick_time_str = clock()
+
+orden1 = textbookQuickSort(test_no_desc1)
+quick_time_sort = clock()
+print 'First Value: ', binary_search(orden1, sch_val)
+print 'Second Value: ', binary_search(orden1, sch_val2)
+print 'Third Value: ', binary_search(orden1, sch_val3)
+quick_time_end = clock()
+print
+sort_time_quicksort = quick_time_sort - quick_time_str        #tiempo para ordenar
+search_time_quicksort = quick_time_end - quick_time_sort      #tiempo para buscar
+quick_sort_time = quick_time_end - quick_time_str             #tiempo total
+print 'Time sorting: ', sort_time_quicksort
+print 'Time searching: ', search_time_quicksort
+print 'Total time elapsed: ', quick_sort_time
+print
+
+#Counting Sort
+print 'Orden no-descendiente 2'
+print 'Counting Sort'
+cnt_time_str = clock()
+
+orden2 = countingSort(test_no_desc2)
+cnt_time_sort = clock()
+print 'First Value: ', binary_search(orden2, sch_val)
+print 'Second Value: ', binary_search(orden2, sch_val2)
+print 'Third Value: ', binary_search(orden2, sch_val3)
+cnt_time_end = clock()
+count_time_sort = cnt_time_sort - cnt_time_str
+search_time_count = cnt_time_end - cnt_time_sort
+count_sort_time = cnt_time_end - cnt_time_str
+print
+print 'Time sorting: ', count_time_sort
+print 'Time searching: ', search_time_count
+print 'Total time elapsed: ', count_sort_time
+print
+
+
+#Binary Tree
+print 'Árbol Binario'
+print 'Binary Tree Search'
+bt_time_str = clock()
+for i in test:
+    node = Node(i)
+    binary_tree.binary_insert(node)
+insert_time_bt = clock()
+print 'First Value: ', binary_tree.tree_search(sch_val)
+print 'Second Value: ', binary_tree.tree_search(sch_val2)
+print 'Third Value: ', binary_tree.tree_search(sch_val3)
+bt_time_end = clock()
+
+sort_time_bt = insert_time_bt - bt_time_str
+search_time_bt = bt_time_end - insert_time_bt
+bt_sort_time = bt_time_end - bt_time_str
+
+print
+print 'Time sorting: ', sort_time_bt
+print 'Time searching: ', search_time_bt
+print 'Total time elapsed: ', bt_sort_time
+
+winner = {bt_sort_time: 'Binary Tree', count_sort_time: 'Counting Sort' ,quick_sort_time:'Quicksort'}
+
+print 'Best running time: ', winner[min(winner)]
+
+
