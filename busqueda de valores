@@ -1,4 +1,5 @@
 from random import randint
+from time import clock    
 
 ##########################
 #ordenes no-descendientes#
@@ -8,8 +9,12 @@ rg_size = 100000
 arr_size = 100000
 test = []
 
+create_beg = clock()
 for i in range(arr_size):
     test.append(randint(0, rg_size))
+create_end = clock()
+creation time = create_end - create_beg
+
     
 
 
@@ -204,7 +209,7 @@ def check(b):       #check para orden no-descendiente
 test_no_desc1 = test[:]
 test_no_desc2 = test[:]
     
-from time import clock    ###para tomar tiempo    
+    
 sch_val = randint(0, rg_size)
 sch_val2 = randint(0, rg_size)
 sch_val3 = randint(0, rg_size)
@@ -277,5 +282,8 @@ print 'Total time elapsed: ', bt_sort_time
 winner = {bt_sort_time: 'Binary Tree', count_sort_time: 'Counting Sort' ,quick_sort_time:'Quicksort'}
 
 print 'Best running time: ', winner[min(winner)]
+
+print
+print 'creation time: ', creation_time
 
 
